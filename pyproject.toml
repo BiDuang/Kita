@@ -1,0 +1,11 @@
+[project]
+name = "kita"
+version = "0.1.0"
+description = "A SySy language compiler profiler"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "commonx>=0.6.38",
+    "pydantic>=2.11.7",
+    "rich>=14.1.0",
+]
