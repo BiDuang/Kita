@@ -45,12 +45,21 @@ parser.add_argument(
 parser.add_argument("-S", "--silent", action="store_true", help="Hide compiler output.")
 parser.add_argument("--keep", action="store_true", help="Skip the cleanup process.")
 parser.add_argument(
-    "-O",
+    "-o",
     "--output",
     type=str,
     dest="report_path",
     help="Path to the output report directory, default is ./report.",
     default="./report",
+)
+parser.add_argument(
+    "-O",
+    "--optimization",
+    type=int,
+    dest="optimization",
+    help="Optimization level for the compiler, default is 0.",
+    choices=[0, 1],
+    default=0,
 )
 parser.add_argument(
     "-P",
@@ -149,7 +158,7 @@ logger.info(
 )
 if filtered_samples.__len__() == 0:
     logger.error(
-        f"[red]Error: The samples directory does not contain any valid checkpoints.[/red]"
+        "[red]Error: The samples directory does not contain any valid checkpoints.[/red]"
     )
     exit(1)
 logger.info(f"[green]Found [yellow]{samples.__len__()}[/yellow] sample(s).[/green]")
@@ -184,6 +193,9 @@ with Progress(
             sample.with_suffix(".s").absolute().__str__(),
             sample.absolute().__str__(),
         ]
+        if args.optimization == 1:
+            logger.info("[blue]Optimization enabled.[/blue]")
+            compile_args.append("-O1")
         if args.args:
             compile_args.extend(args.args)
         try:
