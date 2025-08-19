@@ -243,7 +243,7 @@ with Progress(
         + "(Multi-thread)"
         if current_data.is_multi_thread
         else ""
-        + f"([green]{filtered_samples.__len__()-fail_cnt} Succeed[/green], [red]{fail_cnt} Failed[/red]) "
+        + f"([green]{filtered_samples.__len__() - fail_cnt} Succeed[/green], [red]{fail_cnt} Failed[/red]) "
         + f"in [blue]{compile_used_time}[/blue].\n\n"
     )
 
@@ -251,7 +251,7 @@ with Progress(
         delta_time = compile_used_time - contrast_data.compile
         logger.info(
             f"[green]Previous result: {contrast_data.compile}[/green]"
-            + f"[bold red] + {compile_used_time-contrast_data.compile}"
+            + f"[bold red] + {compile_used_time - contrast_data.compile}"
             if delta_time.total_seconds() > 0
             else f"[bold green] - {-delta_time}"
         )
@@ -342,7 +342,7 @@ with Progress(
 
     logger.info(
         f"\n\n[bold cyan]Targeted [blue]{filtered_samples.__len__()}[/blue] file(s) "
-        + f"([green]{filtered_samples.__len__()-fail_cnt} Succeed[/green], [red]{fail_cnt} Failed[/red]) "
+        + f"([green]{filtered_samples.__len__() - fail_cnt} Succeed[/green], [red]{fail_cnt} Failed[/red]) "
         + f"in [blue]{datetime.datetime.now() - start_target_time}[/blue].[/bold cyan]\n\n"
     )
     if fail_cnt > 0:
@@ -417,11 +417,20 @@ with Progress(
                                 contrast_data.test[sample.stem].replace("s", "")
                             )
                         )
+                        delta_percent = (
+                            (
+                                delta_time.total_seconds()
+                                / used_time.total_seconds()
+                                * 100
+                            )
+                            if used_time.total_seconds() > 0
+                            else 0
+                        )
                         logger.info(
                             f"[green]Previous result: {contrast_data.test[sample.stem]}[/green]"
-                            + f"[bold red] + {delta_time}[/bold red]"
+                            + f"[bold red] + {delta_time} ({delta_percent:.2f}%)[/bold red]"
                             if delta_time.total_seconds() > 0
-                            else f"[bold green] - {-delta_time}[/bold green]"
+                            else f"[bold green] - {-delta_time} ({delta_percent:.2f}%)[/bold green]"
                         )
                     else:
                         logger.debug(
